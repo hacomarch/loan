@@ -33,18 +33,14 @@ public class CounselServiceImpl implements CounselService{
 
     @Override
     public Response get(Long counselId) {
-        Counsel counsel = counselRepository.findById(counselId).orElseThrow(() -> {
-            throw new BaseException(ResultType.SYSTEM_ERROR);
-        });
+        Counsel counsel = findCounselById(counselId);
 
         return modelMapper.map(counsel, Response.class);
     }
 
     @Override
     public Response update(Long counselId, Request request) {
-        Counsel counsel = counselRepository.findById(counselId).orElseThrow(() -> {
-            throw new BaseException(ResultType.SYSTEM_ERROR);
-        });
+        Counsel counsel = findCounselById(counselId);
 
         counsel.setName(request.getName());
         counsel.setCellPhone(request.getCellPhone());
@@ -61,12 +57,17 @@ public class CounselServiceImpl implements CounselService{
 
     @Override
     public void delete(Long counselId) {
-        Counsel counsel = counselRepository.findById(counselId).orElseThrow(() -> {
-            throw new BaseException(ResultType.SYSTEM_ERROR);
-        });
+        Counsel counsel = findCounselById(counselId);
 
         counsel.setIsDeleted(true);
 
         counselRepository.save(counsel);
+    }
+
+    private Counsel findCounselById(Long counselId) {
+        Counsel counsel = counselRepository.findById(counselId).orElseThrow(() -> {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        });
+        return counsel;
     }
 }
