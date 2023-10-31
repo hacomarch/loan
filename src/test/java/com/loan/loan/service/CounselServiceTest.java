@@ -80,4 +80,26 @@ public class CounselServiceTest {
 
         assertThatThrownBy(() -> counselService.get(2L)).isInstanceOf(BaseException.class);
     }
+
+    @Test
+    void Should_ReturnUpdatedResponseOfExistCounselEntity_When_RequestUpdateExistCounselInfo() {
+        Long findId = 1L;
+
+        Counsel entity = Counsel.builder()
+                .counselId(1L)
+                .name("haeun")
+                .build();
+
+        Request request = Request.builder()
+                .name("sungtae")
+                .build();
+
+        when(counselRepository.save(any(Counsel.class))).thenReturn(entity);
+        when(counselRepository.findById(findId)).thenReturn(Optional.ofNullable(entity));
+
+        Response actual = counselService.update(findId, request);
+
+        assertThat(actual.getCounselId()).isSameAs(findId);
+        assertThat(actual.getName()).isSameAs(request.getName());
+    }
 }
