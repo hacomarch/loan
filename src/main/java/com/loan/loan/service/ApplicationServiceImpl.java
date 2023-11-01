@@ -31,18 +31,14 @@ public class ApplicationServiceImpl implements ApplicationService{
 
     @Override
     public Response get(Long applicationId) {
-        Application application = applicationRepository.findById(applicationId).orElseThrow(() -> {
-            throw new BaseException(ResultType.SYSTEM_ERROR);
-        });
+        Application application = getApplicationById(applicationId);
 
         return modelMapper.map(application, Response.class);
     }
 
     @Override
     public Response update(Long applicationId, Request request) {
-        Application application = applicationRepository.findById(applicationId).orElseThrow(() -> {
-            throw new BaseException(ResultType.SYSTEM_ERROR);
-        });
+        Application application = getApplicationById(applicationId);
 
         application.setName(request.getName());
         application.setCellPhone(request.getCellPhone());
@@ -56,12 +52,17 @@ public class ApplicationServiceImpl implements ApplicationService{
 
     @Override
     public void delete(Long applicationId) {
-        Application application = applicationRepository.findById(applicationId).orElseThrow(() -> {
-            throw new BaseException(ResultType.SYSTEM_ERROR);
-        });
+        Application application = getApplicationById(applicationId);
 
         application.setIsDeleted(true);
 
         applicationRepository.save(application);
+    }
+
+    private Application getApplicationById(Long applicationId) {
+        Application application = applicationRepository.findById(applicationId).orElseThrow(() -> {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        });
+        return application;
     }
 }
